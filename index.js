@@ -120,10 +120,15 @@ async function run() {
 
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
-      
-      const query = {};
-      const users = await usersCollection.find(query).toArray();
-      res.send(users);
+      const checkEmail = { email };
+      const isAdmin = await usersCollection.find(checkEmail).toArray();
+      if (isAdmin[0].role === "admin") {
+        const query = {};
+        const users = await usersCollection.find(query).toArray();
+        res.send(users);
+      } else {
+        res.send({});
+      }
     });
     app.post("/users", async (req, res) => {
       const user = req.body;
